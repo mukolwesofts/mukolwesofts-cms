@@ -9,3 +9,5 @@ data/
 *.log
 .DS_Store
 .devin/
+.vercel
+.env*
