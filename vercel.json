@@ -1,6 +1,7 @@
 {
     "version": 2,
     "rewrites": [
+        { "source": "/api/(.*)", "destination": "/api/[...slug]?...slug=$1" },
         { "source": "/admin", "destination": "/admin.html" },
         { "source": "/((?!api/).*)", "destination": "/404.html" }
     ]
