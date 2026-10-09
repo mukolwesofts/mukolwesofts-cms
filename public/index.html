@@ -1,133 +1,139 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="description" content="mukolwesofts — small, fast tools for the web" />
-    <title>Mukolwesofts</title>
-    <script src="/js/theme.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/css/tokens.css" />
-    <link rel="stylesheet" href="/css/base.css" />
-    <link rel="stylesheet" href="/css/components.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="container">
-        <a class="brand" href="/">mukolwesofts</a>
-        <nav class="site-nav" aria-label="Sections">
-          <a href="#about">about</a>
-          <a href="#projects">projects</a>
-          <a href="#contact">contact</a>
-        </nav>
-        <button id="theme-toggle" class="theme-toggle" type="button">theme</button>
-      </div>
-    </header>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="description" content="mukolwesofts — small, fast tools for the web" />
+        <title>Mukolwesofts</title>
+        <script src="/js/theme.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/css/tokens.css" />
+        <link rel="stylesheet" href="/css/base.css" />
+        <link rel="stylesheet" href="/css/components.css" />
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="container">
+                <a class="brand" href="/">mukolwesofts</a>
+                <nav class="site-nav" aria-label="Sections">
+                    <a href="#about">about</a>
+                    <a href="#projects">projects</a>
+                    <a href="#contact">contact</a>
+                </nav>
+                <button id="theme-toggle" class="theme-toggle" type="button">theme</button>
+            </div>
+        </header>
 
-    <main class="container">
-      <section class="hero" aria-label="Intro">
-        <h1 class="hero-title">mukolwesofts:$<span class="cursor" aria-hidden="true"></span></h1>
-        <p class="hero-intro" id="hero-intro">loading…</p>
-      </section>
+        <main class="container">
+            <section class="hero" aria-label="Intro">
+                <h1 class="hero-title">
+                    mukolwesofts:$<span class="cursor" aria-hidden="true"></span>
+                </h1>
+                <p class="hero-intro" id="hero-intro">loading…</p>
+            </section>
 
-      <section class="window" id="about" aria-labelledby="about-heading">
-        <div class="window-titlebar" aria-hidden="true">
-          <span class="dot dot-red"></span>
-          <span class="dot dot-yellow"></span>
-          <span class="dot dot-green"></span>
-          <span class="window-title">about.sh</span>
-        </div>
-        <div class="window-body">
-          <h2 class="prompt" id="about-heading">
-            <span class="path">about:$</span> <span class="cmd">cat profile.txt</span>
-          </h2>
-          <dl class="kv-list">
-            <dt>role</dt>
-            <dd id="profile-role">—</dd>
-            <dt>stack</dt>
-            <dd id="profile-stack">—</dd>
-            <dt>location</dt>
-            <dd id="profile-location">—</dd>
-            <dt>status</dt>
-            <dd id="profile-status">—</dd>
-          </dl>
-          <p class="about-text" id="profile-about"></p>
-        </div>
-      </section>
+            <section class="window" id="about" aria-labelledby="about-heading">
+                <div class="window-titlebar" aria-hidden="true">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                    <span class="window-title">about.sh</span>
+                </div>
+                <div class="window-body">
+                    <h2 class="prompt" id="about-heading">
+                        <span class="path">about:$</span> <span class="cmd">cat profile.txt</span>
+                    </h2>
+                    <dl class="kv-list">
+                        <dt>role</dt>
+                        <dd id="profile-role">—</dd>
+                        <dt>stack</dt>
+                        <dd id="profile-stack">—</dd>
+                        <dt>location</dt>
+                        <dd id="profile-location">—</dd>
+                        <dt>status</dt>
+                        <dd id="profile-status">—</dd>
+                    </dl>
+                    <p class="about-text" id="profile-about"></p>
+                </div>
+            </section>
 
-      <section class="window" id="support" aria-labelledby="support-heading">
-        <div class="window-titlebar" aria-hidden="true">
-          <span class="dot dot-red"></span>
-          <span class="dot dot-yellow"></span>
-          <span class="dot dot-green"></span>
-          <span class="window-title">support.sh</span>
-        </div>
-        <div class="window-body">
-          <h2 class="prompt" id="support-heading">
-            <span class="path">support:$</span> <span class="cmd">./buy-me-a-coffee</span>
-          </h2>
-          <p class="project-meta">
-            <span class="project-links"
-              ><a href="https://www.buymeacoffee.com/mukolweke" target="_blank" rel="noopener"
-                >buymeacoffee.com/mukolweke</a
-              ></span
-            >
-          </p>
-        </div>
-      </section>
+            <section class="window" id="support" aria-labelledby="support-heading">
+                <div class="window-titlebar" aria-hidden="true">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                    <span class="window-title">support.sh</span>
+                </div>
+                <div class="window-body">
+                    <h2 class="prompt" id="support-heading">
+                        <span class="path">support:$</span>
+                        <span class="cmd">./buy-me-a-coffee</span>
+                    </h2>
+                    <p class="project-meta">
+                        <span class="project-links"
+                            ><a
+                                href="https://www.buymeacoffee.com/mukolweke"
+                                target="_blank"
+                                rel="noopener"
+                                >buymeacoffee.com/mukolweke</a
+                            ></span
+                        >
+                    </p>
+                </div>
+            </section>
 
-      <section class="window" id="projects" aria-labelledby="projects-heading">
-        <div class="window-titlebar" aria-hidden="true">
-          <span class="dot dot-red"></span>
-          <span class="dot dot-yellow"></span>
-          <span class="dot dot-green"></span>
-          <span class="window-title">projects/</span>
-        </div>
-        <div class="window-body">
-          <h2 class="prompt" id="projects-heading">
-            <span class="path">projects:$</span> <span class="cmd">ls -l</span>
-          </h2>
-          <ul class="project-list" id="project-list"></ul>
-          <p class="empty-state" id="projects-empty" hidden>No projects yet.</p>
-        </div>
-      </section>
+            <section class="window" id="projects" aria-labelledby="projects-heading">
+                <div class="window-titlebar" aria-hidden="true">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                    <span class="window-title">projects/</span>
+                </div>
+                <div class="window-body">
+                    <h2 class="prompt" id="projects-heading">
+                        <span class="path">projects:$</span> <span class="cmd">ls -l</span>
+                    </h2>
+                    <ul class="project-list" id="project-list"></ul>
+                    <p class="empty-state" id="projects-empty" hidden>No projects yet.</p>
+                </div>
+            </section>
 
-      <section class="window" id="contact" aria-labelledby="contact-heading">
-        <div class="window-titlebar" aria-hidden="true">
-          <span class="dot dot-red"></span>
-          <span class="dot dot-yellow"></span>
-          <span class="dot dot-green"></span>
-          <span class="window-title">contact.sh</span>
-        </div>
-        <div class="window-body">
-          <h2 class="prompt" id="contact-heading">
-            <span class="path">contact:$</span> <span class="cmd">./reach-out</span>
-          </h2>
-          <dl class="kv-list">
-            <dt>email</dt>
-            <dd id="contact-email">—</dd>
-            <dt>whatsapp</dt>
-            <dd id="contact-whatsapp">—</dd>
-            <dt>github</dt>
-            <dd id="contact-github">—</dd>
-            <dt>github org</dt>
-            <dd id="contact-github-org">—</dd>
-          </dl>
-        </div>
-      </section>
-    </main>
+            <section class="window" id="contact" aria-labelledby="contact-heading">
+                <div class="window-titlebar" aria-hidden="true">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                    <span class="window-title">contact.sh</span>
+                </div>
+                <div class="window-body">
+                    <h2 class="prompt" id="contact-heading">
+                        <span class="path">contact:$</span> <span class="cmd">./reach-out</span>
+                    </h2>
+                    <dl class="kv-list">
+                        <dt>email</dt>
+                        <dd id="contact-email">—</dd>
+                        <dt>whatsapp</dt>
+                        <dd id="contact-whatsapp">—</dd>
+                        <dt>github</dt>
+                        <dd id="contact-github">—</dd>
+                        <dt>github org</dt>
+                        <dd id="contact-github-org">—</dd>
+                    </dl>
+                </div>
+            </section>
+        </main>
 
-    <footer class="site-footer">
-      <div class="container">
-        <span id="footer-line">mukolwesofts@2026 — exit 0</span>
-      </div>
-    </footer>
+        <footer class="site-footer">
+            <div class="container">
+                <span id="footer-line">mukolwesofts@2026 — exit 0</span>
+            </div>
+        </footer>
 
-    <script src="/js/site.js" defer></script>
-  </body>
+        <script src="/js/site.js" defer></script>
+    </body>
 </html>

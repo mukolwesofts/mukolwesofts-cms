@@ -1,224 +1,298 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="robots" content="noindex" />
-    <title>admin — mukolwesofts</title>
-    <script src="/js/theme.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/css/tokens.css" />
-    <link rel="stylesheet" href="/css/base.css" />
-    <link rel="stylesheet" href="/css/components.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="container">
-        <a class="brand" href="/">mukolwesofts</a>
-        <nav class="site-nav" aria-label="Admin">
-          <a href="/" target="_blank" rel="noopener">view site</a>
-        </nav>
-        <button id="logout-btn" class="theme-toggle" type="button" hidden>log out</button>
-        <button id="theme-toggle" class="theme-toggle" type="button">theme</button>
-      </div>
-    </header>
-
-    <main class="container">
-      <!-- ---------- login ---------- -->
-      <section class="window login-box" id="login-view" hidden>
-        <div class="window-titlebar" aria-hidden="true">
-          <span class="dot dot-red"></span>
-          <span class="dot dot-yellow"></span>
-          <span class="dot dot-green"></span>
-          <span class="window-title">login.sh</span>
-        </div>
-        <div class="window-body">
-          <h1 class="prompt"><span class="path">admin:$</span> <span class="cmd">sudo login</span></h1>
-          <form id="login-form">
-            <div class="field">
-              <label for="login-password">password:$</label>
-              <input
-                class="input"
-                id="login-password"
-                name="password"
-                type="password"
-                autocomplete="current-password"
-                required
-              />
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="robots" content="noindex" />
+        <title>admin — mukolwesofts</title>
+        <script src="/js/theme.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/css/tokens.css" />
+        <link rel="stylesheet" href="/css/base.css" />
+        <link rel="stylesheet" href="/css/components.css" />
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="container">
+                <a class="brand" href="/">mukolwesofts</a>
+                <nav class="site-nav" aria-label="Admin">
+                    <a href="/" target="_blank" rel="noopener">view site</a>
+                </nav>
+                <button id="logout-btn" class="theme-toggle" type="button" hidden>log out</button>
+                <button id="theme-toggle" class="theme-toggle" type="button">theme</button>
             </div>
-            <div class="btn-row">
-              <button class="btn btn-primary" type="submit">log in</button>
+        </header>
+
+        <main class="container">
+            <!-- ---------- login ---------- -->
+            <section class="window login-box" id="login-view" hidden>
+                <div class="window-titlebar" aria-hidden="true">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                    <span class="window-title">login.sh</span>
+                </div>
+                <div class="window-body">
+                    <h1 class="prompt">
+                        <span class="path">admin:$</span> <span class="cmd">sudo login</span>
+                    </h1>
+                    <form id="login-form">
+                        <div class="field">
+                            <label for="login-password">password:$</label>
+                            <input
+                                class="input"
+                                id="login-password"
+                                name="password"
+                                type="password"
+                                autocomplete="current-password"
+                                required
+                            />
+                        </div>
+                        <div class="btn-row">
+                            <button class="btn btn-primary" type="submit">log in</button>
+                        </div>
+                        <p class="msg msg-err" id="login-msg" role="alert"></p>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ---------- dashboard ---------- -->
+            <div id="dashboard-view" hidden>
+                <details class="window" id="project-form-window">
+                    <summary class="window-titlebar">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                        <span class="window-title">edit-project.sh</span>
+                        <span class="marker marker-closed" aria-hidden="true">[+]</span>
+                        <span class="marker marker-open" aria-hidden="true">[-]</span>
+                    </summary>
+                    <div class="window-body">
+                        <h1 class="prompt" id="project-form-heading">
+                            <span class="path">admin:$</span>
+                            <span class="cmd" id="project-form-cmd">./new-project</span>
+                        </h1>
+                        <form id="project-form">
+                            <input type="hidden" id="project-id" />
+                            <div class="field">
+                                <label for="project-name">name</label>
+                                <input class="input" id="project-name" maxlength="60" required />
+                            </div>
+                            <div class="field">
+                                <label for="project-tags">tags (comma separated, max 8)</label>
+                                <input
+                                    class="input"
+                                    id="project-tags"
+                                    placeholder="node, express, sqlite"
+                                />
+                            </div>
+                            <div class="field">
+                                <label for="project-description">description</label>
+                                <textarea
+                                    class="textarea"
+                                    id="project-description"
+                                    maxlength="240"
+                                    required
+                                ></textarea>
+                            </div>
+                            <div class="field">
+                                <label for="project-github">github url</label>
+                                <input
+                                    class="input"
+                                    id="project-github"
+                                    type="url"
+                                    placeholder="https://github.com/…"
+                                />
+                            </div>
+                            <div class="field">
+                                <label for="project-live">live url</label>
+                                <input
+                                    class="input"
+                                    id="project-live"
+                                    type="url"
+                                    placeholder="https://…"
+                                />
+                            </div>
+                            <div class="check-field">
+                                <input id="project-featured" type="checkbox" />
+                                <label for="project-featured">featured</label>
+                            </div>
+                            <div class="btn-row">
+                                <button class="btn btn-primary" id="project-submit" type="submit">
+                                    Save project
+                                </button>
+                                <button class="btn" id="project-cancel" type="button" hidden>
+                                    Cancel
+                                </button>
+                            </div>
+                            <p class="msg" id="project-msg" role="status"></p>
+                        </form>
+                    </div>
+                </details>
+
+                <details class="window" id="project-list-window" open>
+                    <summary class="window-titlebar">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                        <span class="window-title">projects/</span>
+                        <span class="marker marker-closed" aria-hidden="true">[+]</span>
+                        <span class="marker marker-open" aria-hidden="true">[-]</span>
+                    </summary>
+                    <div class="window-body">
+                        <h2 class="prompt" id="project-list-heading">
+                            <span class="path">admin:$</span>
+                            <span class="cmd">ls -l ./projects</span>
+                        </h2>
+                        <ul class="project-list" id="admin-project-list"></ul>
+                        <p class="empty-state" id="admin-projects-empty" hidden>No projects yet.</p>
+                        <p class="msg" id="list-msg" role="status"></p>
+                    </div>
+                </details>
+
+                <details class="window" id="profile-form-window">
+                    <summary class="window-titlebar">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                        <span class="window-title">edit-profile.sh</span>
+                        <span class="marker marker-closed" aria-hidden="true">[+]</span>
+                        <span class="marker marker-open" aria-hidden="true">[-]</span>
+                    </summary>
+                    <div class="window-body">
+                        <h2 class="prompt" id="profile-form-heading">
+                            <span class="path">admin:$</span>
+                            <span class="cmd">./edit-profile</span>
+                        </h2>
+                        <form id="profile-form">
+                            <div class="field">
+                                <label for="profile-headline">headline</label>
+                                <input class="input" id="profile-headline" maxlength="120" />
+                            </div>
+                            <div class="field">
+                                <label for="profile-about">about text</label>
+                                <textarea
+                                    class="textarea"
+                                    id="profile-about"
+                                    maxlength="4000"
+                                ></textarea>
+                            </div>
+                            <div class="field">
+                                <label for="profile-role">role</label>
+                                <input class="input" id="profile-role" maxlength="80" />
+                            </div>
+                            <div class="field">
+                                <label for="profile-stack">stack</label>
+                                <input class="input" id="profile-stack" maxlength="200" />
+                            </div>
+                            <div class="field">
+                                <label for="profile-location">location</label>
+                                <input class="input" id="profile-location" maxlength="80" />
+                            </div>
+                            <div class="field">
+                                <label for="profile-status">status</label>
+                                <input
+                                    class="input"
+                                    id="profile-status"
+                                    maxlength="80"
+                                    placeholder="open to work"
+                                />
+                            </div>
+                            <div class="field">
+                                <label for="profile-email">email</label>
+                                <input class="input" id="profile-email" type="email" />
+                            </div>
+                            <div class="field">
+                                <label for="profile-whatsapp">whatsapp</label>
+                                <input
+                                    class="input"
+                                    id="profile-whatsapp"
+                                    maxlength="30"
+                                    placeholder="+254…"
+                                />
+                            </div>
+                            <div class="field">
+                                <label for="profile-github">github url</label>
+                                <input
+                                    class="input"
+                                    id="profile-github"
+                                    type="url"
+                                    placeholder="https://github.com/…"
+                                />
+                            </div>
+                            <div class="field">
+                                <label for="profile-github_org_url">github org url</label>
+                                <input
+                                    class="input"
+                                    id="profile-github_org_url"
+                                    type="url"
+                                    placeholder="https://github.com/…"
+                                />
+                            </div>
+                            <div class="btn-row">
+                                <button class="btn btn-primary" type="submit">Save changes</button>
+                            </div>
+                            <p class="msg" id="profile-msg" role="status"></p>
+                        </form>
+
+                        <form id="password-form">
+                            <h3 class="prompt">
+                                <span class="path">admin:$</span> <span class="cmd">passwd</span>
+                            </h3>
+                            <div class="field">
+                                <label for="pw-current">current password</label>
+                                <input
+                                    class="input"
+                                    id="pw-current"
+                                    type="password"
+                                    autocomplete="current-password"
+                                    required
+                                />
+                            </div>
+                            <div class="field">
+                                <label for="pw-new">new password (min 8 chars)</label>
+                                <input
+                                    class="input"
+                                    id="pw-new"
+                                    type="password"
+                                    autocomplete="new-password"
+                                    minlength="8"
+                                    required
+                                />
+                                <p class="pw-strength" id="pw-strength" aria-live="polite"></p>
+                            </div>
+                            <div class="field">
+                                <label for="pw-confirm">confirm new password</label>
+                                <input
+                                    class="input"
+                                    id="pw-confirm"
+                                    type="password"
+                                    autocomplete="new-password"
+                                    minlength="8"
+                                    required
+                                />
+                            </div>
+                            <div class="btn-row">
+                                <button class="btn btn-primary" type="submit">
+                                    Change password
+                                </button>
+                            </div>
+                            <p class="msg" id="password-msg" role="status"></p>
+                        </form>
+                    </div>
+                </details>
             </div>
-            <p class="msg msg-err" id="login-msg" role="alert"></p>
-          </form>
-        </div>
-      </section>
+        </main>
 
-      <!-- ---------- dashboard ---------- -->
-      <div id="dashboard-view" hidden>
-        <details class="window" id="project-form-window">
-          <summary class="window-titlebar">
-            <span class="dot dot-red"></span>
-            <span class="dot dot-yellow"></span>
-            <span class="dot dot-green"></span>
-            <span class="window-title">edit-project.sh</span>
-            <span class="marker marker-closed" aria-hidden="true">[+]</span>
-            <span class="marker marker-open" aria-hidden="true">[-]</span>
-          </summary>
-          <div class="window-body">
-            <h1 class="prompt" id="project-form-heading">
-              <span class="path">admin:$</span> <span class="cmd" id="project-form-cmd">./new-project</span>
-            </h1>
-            <form id="project-form">
-              <input type="hidden" id="project-id" />
-              <div class="field">
-                <label for="project-name">name</label>
-                <input class="input" id="project-name" maxlength="60" required />
-              </div>
-              <div class="field">
-                <label for="project-tags">tags (comma separated, max 8)</label>
-                <input class="input" id="project-tags" placeholder="node, express, sqlite" />
-              </div>
-              <div class="field">
-                <label for="project-description">description</label>
-                <textarea class="textarea" id="project-description" maxlength="240" required></textarea>
-              </div>
-              <div class="field">
-                <label for="project-github">github url</label>
-                <input class="input" id="project-github" type="url" placeholder="https://github.com/…" />
-              </div>
-              <div class="field">
-                <label for="project-live">live url</label>
-                <input class="input" id="project-live" type="url" placeholder="https://…" />
-              </div>
-              <div class="check-field">
-                <input id="project-featured" type="checkbox" />
-                <label for="project-featured">featured</label>
-              </div>
-              <div class="btn-row">
-                <button class="btn btn-primary" id="project-submit" type="submit">Save project</button>
-                <button class="btn" id="project-cancel" type="button" hidden>Cancel</button>
-              </div>
-              <p class="msg" id="project-msg" role="status"></p>
-            </form>
-          </div>
-        </details>
+        <footer class="site-footer">
+            <div class="container">mukolwesofts — admin console</div>
+        </footer>
 
-        <details class="window" id="project-list-window" open>
-          <summary class="window-titlebar">
-            <span class="dot dot-red"></span>
-            <span class="dot dot-yellow"></span>
-            <span class="dot dot-green"></span>
-            <span class="window-title">projects/</span>
-            <span class="marker marker-closed" aria-hidden="true">[+]</span>
-            <span class="marker marker-open" aria-hidden="true">[-]</span>
-          </summary>
-          <div class="window-body">
-            <h2 class="prompt" id="project-list-heading">
-              <span class="path">admin:$</span> <span class="cmd">ls -l ./projects</span>
-            </h2>
-            <ul class="project-list" id="admin-project-list"></ul>
-            <p class="empty-state" id="admin-projects-empty" hidden>No projects yet.</p>
-            <p class="msg" id="list-msg" role="status"></p>
-          </div>
-        </details>
-
-        <details class="window" id="profile-form-window">
-          <summary class="window-titlebar">
-            <span class="dot dot-red"></span>
-            <span class="dot dot-yellow"></span>
-            <span class="dot dot-green"></span>
-            <span class="window-title">edit-profile.sh</span>
-            <span class="marker marker-closed" aria-hidden="true">[+]</span>
-            <span class="marker marker-open" aria-hidden="true">[-]</span>
-          </summary>
-          <div class="window-body">
-            <h2 class="prompt" id="profile-form-heading">
-              <span class="path">admin:$</span> <span class="cmd">./edit-profile</span>
-            </h2>
-            <form id="profile-form">
-              <div class="field">
-                <label for="profile-headline">headline</label>
-                <input class="input" id="profile-headline" maxlength="120" />
-              </div>
-              <div class="field">
-                <label for="profile-about">about text</label>
-                <textarea class="textarea" id="profile-about" maxlength="4000"></textarea>
-              </div>
-              <div class="field">
-                <label for="profile-role">role</label>
-                <input class="input" id="profile-role" maxlength="80" />
-              </div>
-              <div class="field">
-                <label for="profile-stack">stack</label>
-                <input class="input" id="profile-stack" maxlength="200" />
-              </div>
-              <div class="field">
-                <label for="profile-location">location</label>
-                <input class="input" id="profile-location" maxlength="80" />
-              </div>
-              <div class="field">
-                <label for="profile-status">status</label>
-                <input class="input" id="profile-status" maxlength="80" placeholder="open to work" />
-              </div>
-              <div class="field">
-                <label for="profile-email">email</label>
-                <input class="input" id="profile-email" type="email" />
-              </div>
-              <div class="field">
-                <label for="profile-whatsapp">whatsapp</label>
-                <input class="input" id="profile-whatsapp" maxlength="30" placeholder="+254…" />
-              </div>
-              <div class="field">
-                <label for="profile-github">github url</label>
-                <input class="input" id="profile-github" type="url" placeholder="https://github.com/…" />
-              </div>
-              <div class="field">
-                <label for="profile-github_org_url">github org url</label>
-                <input class="input" id="profile-github_org_url" type="url" placeholder="https://github.com/…" />
-              </div>
-              <div class="btn-row">
-                <button class="btn btn-primary" type="submit">Save changes</button>
-              </div>
-              <p class="msg" id="profile-msg" role="status"></p>
-            </form>
-
-            <form id="password-form">
-              <h3 class="prompt">
-                <span class="path">admin:$</span> <span class="cmd">passwd</span>
-              </h3>
-              <div class="field">
-                <label for="pw-current">current password</label>
-                <input class="input" id="pw-current" type="password" autocomplete="current-password" required />
-              </div>
-              <div class="field">
-                <label for="pw-new">new password (min 8 chars)</label>
-                <input class="input" id="pw-new" type="password" autocomplete="new-password" minlength="8" required />
-                <p class="pw-strength" id="pw-strength" aria-live="polite"></p>
-              </div>
-              <div class="field">
-                <label for="pw-confirm">confirm new password</label>
-                <input class="input" id="pw-confirm" type="password" autocomplete="new-password" minlength="8" required />
-              </div>
-              <div class="btn-row">
-                <button class="btn btn-primary" type="submit">Change password</button>
-              </div>
-              <p class="msg" id="password-msg" role="status"></p>
-            </form>
-          </div>
-        </details>
-      </div>
-    </main>
-
-    <footer class="site-footer">
-      <div class="container">mukolwesofts — admin console</div>
-    </footer>
-
-    <script src="/js/admin.js" defer></script>
-  </body>
+        <script src="/js/admin.js" defer></script>
+    </body>
 </html>

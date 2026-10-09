@@ -34,13 +34,13 @@ edit profile/contact content, change your password.
 
 ## Environment variables
 
-| Variable | Required | Purpose |
-|---|---|---|
+| Variable              | Required        | Purpose                                                                                                          |
+| --------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `ADMIN_PASSWORD_HASH` | yes (first run) | bcrypt hash of the admin password. Once changed via /admin, the DB value takes over and this is only a fallback. |
-| `SESSION_SECRET` | yes in prod | session signing secret |
-| `PORT` | no | default `3000` |
-| `DATABASE_PATH` | no | default `./data/app.db` |
-| `NODE_ENV` | no | set to `production` when deployed — enables secure cookies and `upgrade-insecure-requests` |
+| `SESSION_SECRET`      | yes in prod     | session signing secret                                                                                           |
+| `PORT`                | no              | default `3000`                                                                                                   |
+| `DATABASE_PATH`       | no              | default `./data/app.db`                                                                                          |
+| `NODE_ENV`            | no              | set to `production` when deployed — enables secure cookies and `upgrade-insecure-requests`                       |
 
 ## API
 
@@ -66,6 +66,16 @@ Login is rate-limited to 5 attempts / 15 min. All inputs validated with zod.
 ```bash
 npm test     # node:test — covers auth, CRUD, reorder, validation, password change
 ```
+
+## Code style
+
+```bash
+npm run format         # prettier --write .
+npm run format:check   # verify formatting without writing
+npm run lint           # eslint .
+```
+
+Prettier config: `.prettierrc.json` (4 spaces, single quotes, 100 cols).
 
 ## Deployment
 

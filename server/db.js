@@ -39,7 +39,10 @@ function migrate(db) {
   `);
 
     // Lightweight migrations for DBs created before a column existed
-    const profileCols = db.prepare('PRAGMA table_info(profile)').all().map((c) => c.name);
+    const profileCols = db
+        .prepare('PRAGMA table_info(profile)')
+        .all()
+        .map((c) => c.name);
     if (!profileCols.includes('whatsapp')) {
         db.exec("ALTER TABLE profile ADD COLUMN whatsapp TEXT NOT NULL DEFAULT ''");
     }
@@ -78,7 +81,8 @@ function seed(db) {
             },
             {
                 name: 'shamba-tracker',
-                description: 'Farm record keeping for smallholders — fields, inputs, harvests and sales in one place.',
+                description:
+                    'Farm record keeping for smallholders — fields, inputs, harvests and sales in one place.',
                 tags: 'node, express, sqlite',
                 github_url: 'https://github.com/mukolwesofts/shamba-tracker',
                 live_url: 'https://shamba-tracker.example.com',
@@ -86,7 +90,8 @@ function seed(db) {
             },
             {
                 name: 'duka-pos',
-                description: 'Offline-first point of sale for neighbourhood shops. Syncs when the network comes back.',
+                description:
+                    'Offline-first point of sale for neighbourhood shops. Syncs when the network comes back.',
                 tags: 'javascript, pwa, indexeddb',
                 github_url: 'https://github.com/mukolwesofts/duka-pos',
                 live_url: '',
@@ -102,7 +107,8 @@ function seed(db) {
             },
             {
                 name: 'term-portfolio',
-                description: 'This site — a terminal-styled portfolio with a small custom CMS behind it.',
+                description:
+                    'This site — a terminal-styled portfolio with a small custom CMS behind it.',
                 tags: 'express, sqlite, zod',
                 github_url: 'https://github.com/mukolwesofts/term-portfolio',
                 live_url: '',
@@ -117,17 +123,19 @@ function seed(db) {
 
     const { n: profiles } = db.prepare('SELECT COUNT(*) AS n FROM profile').get();
     if (profiles === 0) {
-        db.prepare(`
+        db.prepare(
+            `
       INSERT INTO profile (id, headline, about_text, role, stack, location, status, email, whatsapp, github_url, github_org_url)
       VALUES (1, @headline, @about_text, @role, @stack, @location, @status, @email, @whatsapp, @github_url, @github_org_url)
-    `).run({
+    `
+        ).run({
             headline:
                 'Web Development Expert — ' +
                 'driving scalable, secure & high-performance web apps',
             about_text:
                 "I'm a full-stack developer based in Nairobi, Kenya, working with " +
                 'Laravel, PHP, React, Vue.js and JavaScript. I build business websites ' +
-                'and web apps — currently mukolwesofts.com — and I\'m learning DevOps ' +
+                "and web apps — currently mukolwesofts.com — and I'm learning DevOps " +
                 'and the Laravel + Vue3 + Inertia stack. Off the clock: Chelsea fan, ' +
                 'Marvel + DC comics.',
             role: 'Full Stack Engineer @ Career Now Brands',

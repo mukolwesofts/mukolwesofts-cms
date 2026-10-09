@@ -10,10 +10,7 @@ const loginSchema = z.object({
 
 const changePasswordSchema = z.object({
     current_password: z.string().min(1, 'current password is required').max(200),
-    new_password: z
-        .string()
-        .min(8, 'new password must be at least 8 characters')
-        .max(200),
+    new_password: z.string().min(8, 'new password must be at least 8 characters').max(200),
 });
 
 const loginLimiter = rateLimit({
@@ -84,30 +81,24 @@ function createAuthRouter(db) {
         return res.status(401).json({ error: 'Not authenticated' });
     });
 
-    router.post(
-        '/admin/password',
-        requireAuth,
-        csrfHeader,
-        passwordLimiter,
-        async (req, res) => {
-            const parsed = changePasswordSchema.safeParse(req.body);
-            if (!parsed.success) {
-                return res.status(400).json({ error: parsed.error.issues[0].message });
-            }
-            const hash = currentHash();
-            const ok = hash && (await bcrypt.compare(parsed.data.current_password, hash));
-            if (!ok) {
-                return res.status(401).json({ error: 'Current password is wrong' });
-            }
-            setSetting(db, 'admin_password_hash', await bcrypt.hash(parsed.data.new_password, 12));
-            // Rotate the session so a stolen old session id dies with the password change
-            req.session.regenerate((err) => {
-                if (err) return res.status(500).json({ error: 'Could not refresh session' });
-                req.session.authed = true;
-                res.json({ ok: true });
-            });
+    router.post('/admin/password', requireAuth, csrfHeader, passwordLimiter, async (req, res) => {
+        const parsed = changePasswordSchema.safeParse(req.body);
+        if (!parsed.success) {
+            return res.status(400).json({ error: parsed.error.issues[0].message });
         }
-    );
+        const hash = currentHash();
+        const ok = hash && (await bcrypt.compare(parsed.data.current_password, hash));
+        if (!ok) {
+            return res.status(401).json({ error: 'Current password is wrong' });
+        }
+        setSetting(db, 'admin_password_hash', await bcrypt.hash(parsed.data.new_password, 12));
+        // Rotate the session so a stolen old session id dies with the password change
+        req.session.regenerate((err) => {
+            if (err) return res.status(500).json({ error: 'Could not refresh session' });
+            req.session.authed = true;
+            res.json({ ok: true });
+        });
+    });
 
     return router;
 }

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="robots" content="noindex" />
+        <title>404 — mukolwesofts</title>
+        <script src="/js/theme.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/css/tokens.css" />
+        <link rel="stylesheet" href="/css/base.css" />
+        <link rel="stylesheet" href="/css/components.css" />
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="container">
+                <a class="brand" href="/">mukolwesofts</a>
+                <button id="theme-toggle" class="theme-toggle" type="button">theme</button>
+            </div>
+        </header>
+
+        <main class="container">
+            <section class="window login-box" aria-labelledby="notfound-heading">
+                <div class="window-titlebar" aria-hidden="true">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                    <span class="window-title">404.sh</span>
+                </div>
+                <div class="window-body">
+                    <h1 class="prompt" id="notfound-heading">
+                        <span class="path">mukolwesofts:$</span>
+                        <span class="cmd" id="bad-path">?</span>
+                    </h1>
+                    <p class="project-desc">
+                        zsh: no such file or directory: <span id="bad-path-echo">?</span>
+                    </p>
+                    <p class="project-desc">exit code 127 — this page doesn't exist.</p>
+                    <p class="project-meta">
+                        <span class="project-links">
+                            <a href="/">home</a>
+                        </span>
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <script src="/js/404.js" defer></script>
+    </body>
+</html>

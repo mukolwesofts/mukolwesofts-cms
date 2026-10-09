@@ -78,6 +78,9 @@ function createApp({ dbPath, sessionSecret } = {}) {
     app.get('/admin', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'admin.html')));
     app.use(express.static(PUBLIC_DIR, { extensions: ['html'] }));
 
+    // Terminal-styled 404 for anything that fell through
+    app.use((req, res) => res.status(404).sendFile(path.join(PUBLIC_DIR, '404.html')));
+
     // JSON error handler
     // eslint-disable-next-line no-unused-vars
     app.use((err, req, res, next) => {

@@ -147,12 +147,12 @@
 
     /* ---------- accordion windows (admin) ---------- */
 
-    details.window>summary.window-titlebar {
+    details.window > summary.window-titlebar {
         cursor: pointer;
         list-style: none;
     }
 
-    details.window>summary.window-titlebar::-webkit-details-marker {
+    details.window > summary.window-titlebar::-webkit-details-marker {
         display: none;
     }
 
@@ -161,19 +161,19 @@
         color: var(--muted);
     }
 
-    details.window:not([open])>summary .marker-open {
+    details.window:not([open]) > summary .marker-open {
         display: none;
     }
 
-    details.window[open]>summary .marker-closed {
+    details.window[open] > summary .marker-closed {
         display: none;
     }
 
-    details.window:not([open])>summary.window-titlebar {
+    details.window:not([open]) > summary.window-titlebar {
         border-bottom-color: transparent;
     }
 
-    details.window>summary.window-titlebar:hover .window-title {
+    details.window > summary.window-titlebar:hover .window-title {
         color: var(--accent);
     }
 
@@ -281,7 +281,7 @@
         content: '#';
     }
 
-    .tag+.tag {
+    .tag + .tag {
         margin-left: 0.5rem;
     }
 
