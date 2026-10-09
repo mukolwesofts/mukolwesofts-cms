@@ -1,0 +1,38 @@
+@layer tokens {
+  :root {
+    color-scheme: dark;
+    --bg: #0c0f0c;
+    --window: #121712;
+    --text: #d6e2d6;
+    --muted: #8ba38f;
+    --accent: #3ddc6b;
+    --accent-dim: #2aa54f;
+    --border: #243529;
+    --danger: #ff7b72;
+    --dot-red: #ff5f57;
+    --dot-yellow: #febc2e;
+    --dot-green: #28c840;
+    --link: var(--accent);
+    --focus: var(--accent);
+    --input-bg: #0c0f0c;
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
+      'Liberation Mono', monospace;
+    --radius: 8px;
+    --content-max: 880px;
+  }
+
+  :root[data-theme='light'] {
+    color-scheme: light;
+    --bg: #e9ece4;
+    --window: #f8f9f4;
+    --text: #1c2a1f;
+    --muted: #55695b;
+    --accent: #0b7a32;
+    --accent-dim: #0a6429;
+    --border: #ccd6c7;
+    --danger: #b3261e;
+    --input-bg: #ffffff;
+    --shadow: 0 8px 24px rgba(28, 42, 31, 0.12);
+  }
+}

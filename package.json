@@ -1,0 +1,26 @@
+{
+  "name": "mukolwesofts-cms",
+  "version": "1.0.0",
+  "description": "Terminal-styled portfolio site with a small CMS backend",
+  "type": "commonjs",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "node server/index.js",
+    "start": "NODE_ENV=production node server/index.js",
+    "hash-password": "node server/hash-password.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.2.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.1",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "zod": "^3.23.8"
+  }
+}
