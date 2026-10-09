@@ -1,33 +1,12 @@
 const session = require('express-session');
 
-// Minimal SQLite-backed session store — sessions survive server restarts.
+// SQLite/libsql-backed session store — sessions survive restarts and work in
+// serverless deployments (Turso). The `sessions` table is created by db.migrate.
 class SqliteStore extends session.Store {
     constructor(db, ttlMs = 8 * 60 * 60 * 1000) {
         super();
+        this.db = db;
         this.ttlMs = ttlMs;
-        db.exec(`
-      CREATE TABLE IF NOT EXISTS sessions (
-        sid     TEXT PRIMARY KEY,
-        sess    TEXT NOT NULL,
-        expires INTEGER NOT NULL
-      )
-    `);
-        this.getStmt = db.prepare('SELECT sess, expires FROM sessions WHERE sid = ?');
-        this.setStmt = db.prepare(
-            `INSERT INTO sessions (sid, sess, expires) VALUES (?, ?, ?)
-       ON CONFLICT(sid) DO UPDATE SET sess = excluded.sess, expires = excluded.expires`
-        );
-        this.delStmt = db.prepare('DELETE FROM sessions WHERE sid = ?');
-        this.touchStmt = db.prepare('UPDATE sessions SET expires = ? WHERE sid = ?');
-        this.cleanStmt = db.prepare('DELETE FROM sessions WHERE expires < ?');
-
-        this.sweeper = setInterval(
-            () => {
-                this.cleanStmt.run(Date.now());
-            },
-            15 * 60 * 1000
-        );
-        this.sweeper.unref();
     }
 
     expires(sess) {
@@ -36,40 +15,42 @@ class SqliteStore extends session.Store {
     }
 
     get(sid, cb) {
-        try {
-            const row = this.getStmt.get(sid);
-            if (!row || row.expires < Date.now()) return cb(null, null);
-            cb(null, JSON.parse(row.sess));
-        } catch (err) {
-            cb(err);
-        }
+        this.db
+            .execute({ sql: 'SELECT sess, expires FROM sessions WHERE sid = ?', args: [sid] })
+            .then(({ rows }) => {
+                const row = rows[0];
+                if (!row || Number(row.expires) < Date.now()) return cb(null, null);
+                cb(null, JSON.parse(row.sess));
+            })
+            .catch(cb);
     }
 
     set(sid, sess, cb) {
-        try {
-            this.setStmt.run(sid, JSON.stringify(sess), this.expires(sess));
-            if (cb) cb(null);
-        } catch (err) {
-            if (cb) cb(err);
-        }
+        this.db
+            .execute({
+                sql: `INSERT INTO sessions (sid, sess, expires) VALUES (?, ?, ?)
+                      ON CONFLICT(sid) DO UPDATE SET sess = excluded.sess, expires = excluded.expires`,
+                args: [sid, JSON.stringify(sess), this.expires(sess)],
+            })
+            .then(() => cb && cb(null))
+            .catch((err) => cb && cb(err));
     }
 
     touch(sid, sess, cb) {
-        try {
-            this.touchStmt.run(this.expires(sess), sid);
-            if (cb) cb(null);
-        } catch (err) {
-            if (cb) cb(err);
-        }
+        this.db
+            .execute({
+                sql: 'UPDATE sessions SET expires = ? WHERE sid = ?',
+                args: [this.expires(sess), sid],
+            })
+            .then(() => cb && cb(null))
+            .catch((err) => cb && cb(err));
     }
 
     destroy(sid, cb) {
-        try {
-            this.delStmt.run(sid);
-            if (cb) cb(null);
-        } catch (err) {
-            if (cb) cb(err);
-        }
+        this.db
+            .execute({ sql: 'DELETE FROM sessions WHERE sid = ?', args: [sid] })
+            .then(() => cb && cb(null))
+            .catch((err) => cb && cb(err));
     }
 }
 

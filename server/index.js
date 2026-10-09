@@ -11,11 +11,11 @@ const projectsRouter = require('./routes/projects');
 const profileRouter = require('./routes/profile');
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
 
-function createApp({ dbPath, sessionSecret } = {}) {
-    const db = createDb(
-        dbPath || process.env.DATABASE_PATH || path.join(__dirname, '..', 'data', 'app.db')
+async function createApp({ dbUrl, sessionSecret } = {}) {
+    const db = await createDb(
+        dbUrl || process.env.DATABASE_URL || `file:${path.join(__dirname, '..', 'data', 'app.db')}`
     );
     const secret =
         sessionSecret ||
@@ -96,10 +96,16 @@ function createApp({ dbPath, sessionSecret } = {}) {
 
 if (require.main === module) {
     const port = Number(process.env.PORT) || 3000;
-    const { app } = createApp();
-    app.listen(port, () => {
-        console.log(`mukolwesofts listening on http://localhost:${port}`);
-    });
+    createApp()
+        .then(({ app }) => {
+            app.listen(port, () => {
+                console.log(`mukolwesofts listening on http://localhost:${port}`);
+            });
+        })
+        .catch((err) => {
+            console.error('Failed to start:', err);
+            process.exit(1);
+        });
 }
 
 module.exports = { createApp };

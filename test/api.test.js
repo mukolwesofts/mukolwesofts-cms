@@ -31,7 +31,7 @@ async function api(path, { method = 'GET', body, headers = {} } = {}) {
 
 before(async () => {
     process.env.ADMIN_PASSWORD_HASH = bcrypt.hashSync('hunter2', 4);
-    const { app } = createApp({ dbPath: ':memory:', sessionSecret: 'test-secret' });
+    const { app } = await createApp({ dbUrl: ':memory:', sessionSecret: 'test-secret' });
     await new Promise((resolve) => {
         server = app.listen(0, resolve);
     });

@@ -1,6 +1,7 @@
 const express = require('express');
 const { z } = require('zod');
 const { requireAuth, csrfHeader } = require('../auth');
+const { ah } = require('../http');
 const { uniqueSlug } = require('../db');
 
 const urlField = z
@@ -54,98 +55,135 @@ module.exports = function projectsRouter(db) {
     const admin = [requireAuth, csrfHeader];
 
     // Public: list all projects
-    router.get('/projects', (req, res) => {
-        const rows = db
-            .prepare('SELECT * FROM projects ORDER BY sort_order ASC, created_at DESC, id DESC')
-            .all();
-        res.json(rows.map(rowToJson));
-    });
+    router.get(
+        '/projects',
+        ah(async (req, res) => {
+            const { rows } = await db.execute(
+                'SELECT * FROM projects ORDER BY sort_order ASC, created_at DESC, id DESC'
+            );
+            res.json(rows.map(rowToJson));
+        })
+    );
 
     // Admin: reorder — must be registered before /:id
-    router.put('/projects/reorder', admin, (req, res) => {
-        const parsed = reorderSchema.safeParse(req.body);
-        if (!parsed.success) {
-            return res.status(400).json({ error: parsed.error.issues[0].message });
-        }
-        const update = db.prepare('UPDATE projects SET sort_order = ? WHERE id = ?');
-        db.transaction(() => {
-            parsed.data.ids.forEach((id, i) => update.run(i, id));
-        })();
-        res.json({ ok: true });
-    });
+    router.put(
+        '/projects/reorder',
+        admin,
+        ah(async (req, res) => {
+            const parsed = reorderSchema.safeParse(req.body);
+            if (!parsed.success) {
+                return res.status(400).json({ error: parsed.error.issues[0].message });
+            }
+            await db.batch(
+                parsed.data.ids.map((id, i) => ({
+                    sql: 'UPDATE projects SET sort_order = ? WHERE id = ?',
+                    args: [i, id],
+                })),
+                'write'
+            );
+            res.json({ ok: true });
+        })
+    );
 
     // Admin: create
-    router.post('/projects', admin, (req, res) => {
-        const parsed = projectSchema.safeParse(req.body);
-        if (!parsed.success) {
-            return res.status(400).json({ error: parsed.error.issues[0].message });
-        }
-        const p = parsed.data;
-        const { max } = db
-            .prepare('SELECT COALESCE(MAX(sort_order), -1) AS max FROM projects')
-            .get();
-        const info = db
-            .prepare(
-                `INSERT INTO projects (name, slug, description, tags, github_url, live_url, featured, sort_order)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-            )
-            .run(
-                p.name,
-                uniqueSlug(db, p.name),
-                p.description,
-                normalizeTags(p.tags),
-                p.github_url,
-                p.live_url,
-                p.featured ? 1 : 0,
-                max + 1
+    router.post(
+        '/projects',
+        admin,
+        ah(async (req, res) => {
+            const parsed = projectSchema.safeParse(req.body);
+            if (!parsed.success) {
+                return res.status(400).json({ error: parsed.error.issues[0].message });
+            }
+            const p = parsed.data;
+            const { rows } = await db.execute(
+                'SELECT COALESCE(MAX(sort_order), -1) AS max FROM projects'
             );
-        const row = db.prepare('SELECT * FROM projects WHERE id = ?').get(info.lastInsertRowid);
-        res.status(201).json(rowToJson(row));
-    });
+            const info = await db.execute({
+                sql: `INSERT INTO projects (name, slug, description, tags, github_url, live_url, featured, sort_order)
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                args: [
+                    p.name,
+                    await uniqueSlug(db, p.name),
+                    p.description,
+                    normalizeTags(p.tags),
+                    p.github_url,
+                    p.live_url,
+                    p.featured ? 1 : 0,
+                    Number(rows[0].max) + 1,
+                ],
+            });
+            const { rows: created } = await db.execute({
+                sql: 'SELECT * FROM projects WHERE id = ?',
+                args: [Number(info.lastInsertRowid)],
+            });
+            res.status(201).json(rowToJson(created[0]));
+        })
+    );
 
     // Admin: update
-    router.put('/projects/:id', admin, (req, res) => {
-        const id = Number(req.params.id);
-        if (!Number.isInteger(id) || id < 1) {
-            return res.status(400).json({ error: 'Invalid project id' });
-        }
-        const existing = db.prepare('SELECT * FROM projects WHERE id = ?').get(id);
-        if (!existing) return res.status(404).json({ error: 'Project not found' });
+    router.put(
+        '/projects/:id',
+        admin,
+        ah(async (req, res) => {
+            const id = Number(req.params.id);
+            if (!Number.isInteger(id) || id < 1) {
+                return res.status(400).json({ error: 'Invalid project id' });
+            }
+            const { rows: existing } = await db.execute({
+                sql: 'SELECT * FROM projects WHERE id = ?',
+                args: [id],
+            });
+            if (!existing.length) return res.status(404).json({ error: 'Project not found' });
 
-        const parsed = projectSchema.safeParse(req.body);
-        if (!parsed.success) {
-            return res.status(400).json({ error: parsed.error.issues[0].message });
-        }
-        const p = parsed.data;
-        const slug = existing.name === p.name ? existing.slug : uniqueSlug(db, p.name, id);
-        db.prepare(
-            `UPDATE projects
-       SET name = ?, slug = ?, description = ?, tags = ?, github_url = ?, live_url = ?,
-           featured = ?, updated_at = datetime('now')
-       WHERE id = ?`
-        ).run(
-            p.name,
-            slug,
-            p.description,
-            normalizeTags(p.tags),
-            p.github_url,
-            p.live_url,
-            p.featured ? 1 : 0,
-            id
-        );
-        res.json(rowToJson(db.prepare('SELECT * FROM projects WHERE id = ?').get(id)));
-    });
+            const parsed = projectSchema.safeParse(req.body);
+            if (!parsed.success) {
+                return res.status(400).json({ error: parsed.error.issues[0].message });
+            }
+            const p = parsed.data;
+            const slug =
+                existing[0].name === p.name ? existing[0].slug : await uniqueSlug(db, p.name, id);
+            await db.execute({
+                sql: `UPDATE projects
+                  SET name = ?, slug = ?, description = ?, tags = ?, github_url = ?, live_url = ?,
+                      featured = ?, updated_at = datetime('now')
+                  WHERE id = ?`,
+                args: [
+                    p.name,
+                    slug,
+                    p.description,
+                    normalizeTags(p.tags),
+                    p.github_url,
+                    p.live_url,
+                    p.featured ? 1 : 0,
+                    id,
+                ],
+            });
+            const { rows } = await db.execute({
+                sql: 'SELECT * FROM projects WHERE id = ?',
+                args: [id],
+            });
+            res.json(rowToJson(rows[0]));
+        })
+    );
 
     // Admin: delete
-    router.delete('/projects/:id', admin, (req, res) => {
-        const id = Number(req.params.id);
-        if (!Number.isInteger(id) || id < 1) {
-            return res.status(400).json({ error: 'Invalid project id' });
-        }
-        const info = db.prepare('DELETE FROM projects WHERE id = ?').run(id);
-        if (info.changes === 0) return res.status(404).json({ error: 'Project not found' });
-        res.json({ ok: true });
-    });
+    router.delete(
+        '/projects/:id',
+        admin,
+        ah(async (req, res) => {
+            const id = Number(req.params.id);
+            if (!Number.isInteger(id) || id < 1) {
+                return res.status(400).json({ error: 'Invalid project id' });
+            }
+            const info = await db.execute({
+                sql: 'DELETE FROM projects WHERE id = ?',
+                args: [id],
+            });
+            if (info.rowsAffected === 0)
+                return res.status(404).json({ error: 'Project not found' });
+            res.json({ ok: true });
+        })
+    );
 
     return router;
 };
